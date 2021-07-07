@@ -1,11 +1,15 @@
 import transaction
+import random
+import math
 
 class Stock:
-    def __init__(self, initial_price, volatility, ticker):
+    def __init__(self, initial_price, volatility, drift, ticker):
         self.price = initial_price
         self.volatility = volatility
         self.ticker = ticker
         self.existing = True
+        self.drift = drift
+        self.record = [initial_price]
 
     def remove(self):
         self.existing = False
@@ -34,3 +38,9 @@ class Stock:
             transact.trans_type = "RECEIPT"
             transact.balance += transact.quantity * self.price
         return transact
+
+    def update(self):
+        random.seed()
+        change = random.lognormvariate(self.drift, self.volatility)
+        self.price = self.price*change
+        self.record.append(self.price)
